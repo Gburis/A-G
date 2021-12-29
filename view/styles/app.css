@@ -1,0 +1,11 @@
+body{
+    background-color: #FFA07A;
+}
+
+.fora-do-ar{
+    position: absolute;
+    width: 80%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
