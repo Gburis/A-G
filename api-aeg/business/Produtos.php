@@ -56,7 +56,7 @@
 
     public static function delete($data){
       try {
-        $sql = 'UPDATE `produtos` SET `excluido` = 1 WHERE `produtos`.`_id` = :id';
+        $sql = 'UPDATE `produtos` SET `excluido` = 1 WHERE `_id` = :id';
         $stmt= Db::gInst()->prepare($sql);
         $stmt->execute([':id' => $data['prd_id']]);
 
