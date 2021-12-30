@@ -1,8 +1,12 @@
+# composer
+vendor/
+composer.lock
+
+# Upload de imagens
 api-aeg/upload-imgs
-api-aeg/tmp
 
-.htaccess
-
+#config do projeto
 config.php
 
+#Logs de erro
 Logs.txt

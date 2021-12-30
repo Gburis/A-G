@@ -1,9 +1,10 @@
 <?php
   class Utils {
-    public static function resp($status, $dados){
+    public static function resp($status, $dados, $values = false){
       return [
         "status" => $status,
-        "data" => $dados
+        "data" => $dados,
+        "values" => $values
       ];
     }
   }

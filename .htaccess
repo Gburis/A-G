@@ -1,0 +1,13 @@
+##### LOCAWEB - NAO REMOVER #####
+#AddHandler php73-script .php
+#suPHP_ConfigPath /home/gburis1/
+##### LOCAWEB - NAO REMOVER #####
+
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^upload-imgs/(.*?)$ api-aeg/upload-imgs/$1 [L]
+
+RewriteCond %{REQUEST_URI} !(upload-imgs)(.*?) [NC]
+
+RewriteRule ^api(.*)\?*$ api-aeg/routes.php [L,QSA]

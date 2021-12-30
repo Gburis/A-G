@@ -25,6 +25,7 @@
       case (route('POST','cadastrar-produtos')): echo json_encode(Produtos::save($data)); break;
       case (route('POST', 'listar-produtos')): echo json_encode(Produtos::get($data)); break;
       case (route('POST', 'deletar-produto')): echo json_encode(Produtos::delete($data)); break;
+      case (route('POST', 'marcar-compra')): echo json_encode(Produtos::comprado($data)); break;
       default : echo "not foud"; break;
     }
 

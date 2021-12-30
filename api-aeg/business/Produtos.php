@@ -3,12 +3,44 @@
     
     public static function get($data){
       try {
-        $sql = "SELECT * FROM `produtos` WHERE tabs_id = :id AND excluido = :exc";
-        $stmt= Db::gInst()->prepare($sql);;
-        $stmt->execute([ ':id' => $data['id'], ':exc' => 0 ]); 
+        // Caso seja a tela de comprados carregar todos os itens para o calculo
+        $sql = $data['comprado'] 
+        ? "SELECT * FROM `produtos` WHERE excluido = :exc"
+        : "SELECT * FROM `produtos` WHERE tabs_id = :id AND excluido = :exc";
+
+        $stmt= Db::gInst()->prepare($sql);
+
+        $exe = $data['comprado']  ?  [':exc' => 0 ] : [ ':id' => $data['id'], ':exc' => 0 ];
+
+        $stmt->execute($exe); 
         $produtos = $stmt->fetchAll();
 
-        return Utils::resp(true, $produtos);
+        $valores = false;
+
+        // filtrar todos os itens
+        if($data['comprado']){
+          $inComprados = array_filter($produtos, function($prd){return($prd['comprado'] == "0");});
+
+          $isComprados = array_filter($produtos, function($prd){return($prd['comprado'] == "1");});
+
+          $vlr_isComprados = array_map(function($prd){return $prd['valor'];}, $isComprados);
+
+          $vlr_inComprados = array_map(function($prd){return $prd['valor'];}, $inComprados);
+
+          // somar valores
+          $vlr_isComprados = array_reduce($vlr_isComprados, function($total, $somar){
+            return $total + $somar;
+          });
+
+          $vlr_inComprados = array_reduce($vlr_inComprados, function($total, $somar){
+            return $total + $somar;
+          });
+
+          $valores = ['comprar' => $vlr_inComprados, 'comprados' =>  $vlr_isComprados];
+          $produtos = $isComprados;
+        }
+
+        return Utils::resp(true, $produtos, $valores);
       } catch (\Throwable $th) {
         return Utils::resp(false, $th);
       } 
@@ -61,6 +93,18 @@
         $stmt->execute([':id' => $data['prd_id']]);
 
         return Utils::resp(true, ["msg" => 'Produto excluído com exito!']);
+      } catch (\Throwable $th) {
+        return Utils::resp(false, $th);
+      }  
+    }
+
+    public static function comprado($data){
+      try {
+        $sql = 'UPDATE `produtos` SET `comprado` = :sts WHERE `_id` = :id';
+        $stmt= Db::gInst()->prepare($sql);
+        $stmt->execute([':sts' => $data['status'], ':id' => $data['prd_id']]);
+
+        return Utils::resp(true, ["msg" => 'Produto marcado com exito!']);
       } catch (\Throwable $th) {
         return Utils::resp(false, $th);
       }  
