@@ -8,6 +8,9 @@ RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^upload-imgs/(.*?)$ api-aeg/upload-imgs/$1 [L]
 
+RewriteCond %{HTTP:Authorization} ^(.+)$
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
 RewriteCond %{REQUEST_URI} !(upload-imgs)(.*?) [NC]
 
 RewriteRule ^api(.*)\?*$ api-aeg/routes.php [L,QSA]

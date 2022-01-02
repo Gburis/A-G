@@ -19,22 +19,22 @@
 
         // filtrar todos os itens
         if($data['comprado']){
-          $inComprados = array_filter($produtos, function($prd){return($prd['comprado'] == "0");});
+          $inComprados =  array_values(array_filter($produtos, function($prd){return($prd['comprado'] == "0");}));
 
-          $isComprados = array_filter($produtos, function($prd){return($prd['comprado'] == "1");});
+          $isComprados =  array_values(array_filter($produtos, function($prd){return($prd['comprado'] == "1");}));
 
           $vlr_isComprados = array_map(function($prd){return $prd['valor'];}, $isComprados);
 
           $vlr_inComprados = array_map(function($prd){return $prd['valor'];}, $inComprados);
 
           // somar valores
-          $vlr_isComprados = array_reduce($vlr_isComprados, function($total, $somar){
-            return $total + $somar;
-          });
+          $vlr_isComprados = sizeof($vlr_isComprados) > 0 
+            ? array_reduce($vlr_isComprados, function($total, $somar){return $total + $somar;})
+            : 0;
 
-          $vlr_inComprados = array_reduce($vlr_inComprados, function($total, $somar){
-            return $total + $somar;
-          });
+          $vlr_inComprados = sizeof($vlr_inComprados) > 0 
+            ? array_reduce($vlr_inComprados, function($total, $somar){return $total + $somar;})
+            : 0;
 
           $valores = ['comprar' => $vlr_inComprados, 'comprados' =>  $vlr_isComprados];
           $produtos = $isComprados;
@@ -42,6 +42,7 @@
 
         return Utils::resp(true, $produtos, $valores);
       } catch (\Throwable $th) {
+        error_log('Erro ao carregar prodtuos => '.$th->getMessage());
         return Utils::resp(false, $th);
       } 
     }
@@ -53,7 +54,6 @@
         $stmt= Db::gInst()->prepare($sql);
         // Convertendo base 64 e imagem
         $image = $data['img'];
-        error_log('TYPE :'.$data['type_img']);
         $image = str_replace('data:'.$data['type_img'].';base64,', '', $image);
         $image = str_replace(' ', '+', $image);
         $image = base64_decode($image);
@@ -105,6 +105,25 @@
         $stmt->execute([':sts' => $data['status'], ':id' => $data['prd_id']]);
 
         return Utils::resp(true, ["msg" => 'Produto marcado com exito!']);
+      } catch (\Throwable $th) {
+        return Utils::resp(false, $th);
+      }  
+    }
+
+    public static function update($data){
+      try {
+        $sql = 'UPDATE `produtos` SET `tabs_id`= :tab, `nome`= :nome, `descricao`= :desc, `link`= :link, `valor`= :vlr WHERE `_id` = :id';
+        $stmt= Db::gInst()->prepare($sql);
+        $stmt->execute([
+          ':tab'  => $data['tab'], 
+          ':nome' => $data['nome'],
+          ':desc' => $data['descricao'],
+          ':link' => $data['link'],
+          ':vlr'  => $data['valor'],
+          ':id'   => $data['_id']
+        ]);
+
+        return Utils::resp(true, ["msg" => 'Produto editado com exito!']);
       } catch (\Throwable $th) {
         return Utils::resp(false, $th);
       }  
