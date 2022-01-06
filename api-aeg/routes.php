@@ -24,6 +24,7 @@
     switch ($rurl) {
       //Login
       case (route('POST','login', true)): echo json_encode(Login::auth($data)); break;
+      case (route('GET','check-auth', true)): echo json_encode(Utils::authToken()); break;
       //Tabs
       case (route('POST','cadastrar-tabs')): echo json_encode(Tabs::save($data)); break;
       case (route('GET', 'listar-tabs')): echo json_encode(Tabs::get()); break;

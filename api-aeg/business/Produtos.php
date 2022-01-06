@@ -23,9 +23,9 @@
 
           $isComprados =  array_values(array_filter($produtos, function($prd){return($prd['comprado'] == "1");}));
 
-          $vlr_isComprados = array_map(function($prd){return $prd['valor'];}, $isComprados);
+          $vlr_isComprados = array_map(function($prd){return $prd['valor'] * $prd['qtd'];}, $isComprados);
 
-          $vlr_inComprados = array_map(function($prd){return $prd['valor'];}, $inComprados);
+          $vlr_inComprados = array_map(function($prd){return $prd['valor'] * $prd['qtd'];}, $inComprados);
 
           // somar valores
           $vlr_isComprados = sizeof($vlr_isComprados) > 0 
@@ -50,7 +50,7 @@
     public static function save($data){
       try {
         $ext = ""; 
-        $sql = "INSERT INTO `produtos`(`tabs_id`, `nome`, `descricao`, `img`, `link`, `valor`) VALUES (?, ?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO `produtos`(`tabs_id`, `nome`, `descricao`, `img`, `link`, `qtd`, `valor`) VALUES (?, ?, ?, ?, ?, ?, ?)";
         $stmt= Db::gInst()->prepare($sql);
         // Convertendo base 64 e imagem
         $image = $data['img'];
@@ -77,7 +77,7 @@
         error_log('NAME :'.$new_name);
         file_put_contents('./upload-imgs/'.$new_name, $image);
 
-        $stmt->execute([ $data['tab_id'], $data['nome'], $data['desc'], $new_name, $data['link'], $data['valor']]);
+        $stmt->execute([ $data['tab_id'], $data['nome'], $data['desc'], $new_name, $data['link'], $data['qtd'], $data['valor']]);
 
         return Utils::resp(true, ["msg" => $data['nome'].' Adicionada(o) com exito!']);
       } catch (\Throwable $th) {
@@ -112,7 +112,7 @@
 
     public static function update($data){
       try {
-        $sql = 'UPDATE `produtos` SET `tabs_id`= :tab, `nome`= :nome, `descricao`= :desc, `link`= :link, `valor`= :vlr WHERE `_id` = :id';
+        $sql = 'UPDATE `produtos` SET `tabs_id`= :tab, `nome`= :nome, `descricao`= :desc, `link`= :link, `qtd` = :qtd, `valor`= :vlr WHERE `_id` = :id';
         $stmt= Db::gInst()->prepare($sql);
         $stmt->execute([
           ':tab'  => $data['tab'], 
@@ -120,7 +120,8 @@
           ':desc' => $data['descricao'],
           ':link' => $data['link'],
           ':vlr'  => $data['valor'],
-          ':id'   => $data['_id']
+          ':id'   => $data['_id'],
+          ':qtd'   => $data['qtd']
         ]);
 
         return Utils::resp(true, ["msg" => 'Produto editado com exito!']);
