@@ -5,7 +5,7 @@
       try {
         // Caso seja a tela de comprados carregar todos os itens para o calculo
         $sql = $data['comprado'] 
-        ? "SELECT * FROM `produtos` WHERE excluido = :exc"
+        ? "SELECT p._id, tabs_id, nome, descricao, img, link, qtd, valor, comprado, excluido, calculo FROM `produtos` AS p INNER JOIN `tabs` AS t WHERE p.tabs_id = t._id AND excluido = :exc"
         : "SELECT * FROM `produtos` WHERE tabs_id = :id AND excluido = :exc";
 
         $stmt= Db::gInst()->prepare($sql);
@@ -19,9 +19,9 @@
 
         // filtrar todos os itens
         if($data['comprado']){
-          $inComprados =  array_values(array_filter($produtos, function($prd){return($prd['comprado'] == "0");}));
+          $inComprados =  array_values(array_filter($produtos, function($prd){return($prd['comprado'] == "0" && $prd['calculo'] > 0);}));
 
-          $isComprados =  array_values(array_filter($produtos, function($prd){return($prd['comprado'] == "1");}));
+          $isComprados =  array_values(array_filter($produtos, function($prd){return($prd['comprado'] == "1" && $prd['calculo'] > 0);}));
 
           $vlr_isComprados = array_map(function($prd){return $prd['valor'] * $prd['qtd'];}, $isComprados);
 
