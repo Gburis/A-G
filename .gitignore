@@ -7,6 +7,7 @@ api-aeg/upload-imgs
 
 #config do projeto
 config.php
+firebase_credentials.json
 
 #Logs de erro
 Logs.txt

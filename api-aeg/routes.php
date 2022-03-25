@@ -34,6 +34,10 @@
       case (route('POST', 'editar-produtos')): echo json_encode(Produtos::update($data)); break;
       case (route('POST', 'deletar-produto')): echo json_encode(Produtos::delete($data)); break;
       case (route('POST', 'marcar-compra')): echo json_encode(Produtos::comprado($data)); break;
+      // notification
+      case (route('POST', 'device')): echo json_encode(FireBase::insertAndUpdateDevice($data)); break;
+      case (route('POST', 'cloud-messaging')): echo json_encode(FireBase::notification($data)); break;
+
       default : echo json_encode( Utils::resp(false, ["msg"=>"not foud"])); break;
     }
 
