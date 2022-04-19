@@ -29,11 +29,15 @@
       case (route('POST','cadastrar-tabs')): echo json_encode(Tabs::save($data)); break;
       case (route('GET', 'listar-tabs')): echo json_encode(Tabs::get()); break;
       //Produtos
-      case (route('POST','cadastrar-produtos')): echo json_encode(Produtos::save($data)); break;
+      case (route('POST', 'cadastrar-produtos')): echo json_encode(Produtos::save($data)); break;
       case (route('POST', 'listar-produtos')): echo json_encode(Produtos::get($data)); break;
       case (route('POST', 'editar-produtos')): echo json_encode(Produtos::update($data)); break;
       case (route('POST', 'deletar-produto')): echo json_encode(Produtos::delete($data)); break;
       case (route('POST', 'marcar-compra')): echo json_encode(Produtos::comprado($data)); break;
+      //convidados
+      case (route('POST', 'salvar-convidados')): echo json_encode(Convidados::save($data)); break;
+      case (route('GET', 'listar-convidados')): echo json_encode(Convidados::list()); break;
+      case (route('POST', 'convite-check')): echo json_encode(Convidados::sendEnvite($data)); break;
       // notification
       case (route('POST', 'device')): echo json_encode(FireBase::insertAndUpdateDevice($data)); break;
       case (route('POST', 'cloud-messaging')): echo json_encode(FireBase::notification($data)); break;

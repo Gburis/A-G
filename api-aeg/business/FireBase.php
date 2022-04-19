@@ -51,10 +51,26 @@
 
             $deviceToken = $device['token'];
             
-            $notification = [
-              "title" => "A&G Novo Item",
-              "body" => 'Olá, '.$device['nick'].'! '.$data['nome']." adicionou ".$data['produto']
-            ];
+            if($data['produto']){
+              $notification = [
+                "title" => "A&G Novo Item",
+                "body" => 'Olá, '.$device['nick'].'! '.$data['nome']." adicionou ".$data['produto']
+              ];
+            }
+
+            if($data['convidado']){
+              $notification = [
+                "title" => "Convidados",
+                "body" => 'Olá, '.$device['nick'].'! '.$data['nome']." adicionou ".$data['convidado']." a lista"
+              ];
+            }
+
+            if($data['envite']){
+              $notification = [
+                "title" => "Convidados",
+                "body" => 'Olá, '.$device['nick'].'! '.$data['nome']." Já convidou ".$data['envite']
+              ];
+            }
             
             $message = CloudMessage::withTarget('token', $deviceToken)
             ->withNotification($notification);

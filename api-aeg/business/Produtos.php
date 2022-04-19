@@ -68,6 +68,9 @@
           case 'image/png':
             $ext = ".png";
           break;
+          case 'image/webp':
+            $ext = ".webp";
+          break;
           default:
             throw new Exception("Formato de arquivo não permitido!", 1);
           break;
